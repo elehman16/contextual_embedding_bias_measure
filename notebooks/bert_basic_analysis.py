@@ -1,39 +1,27 @@
 #!/usr/bin/env python
 # coding: utf-8
-
-# In[1]:
-
-
 import torch
 import pandas as pd
 import numpy as np
 from pathlib import Path
 from typing import *
 import matplotlib.pyplot as plt
-get_ipython().run_line_magic('matplotlib', 'inline')
-
-
-# In[2]:
-
+#get_ipython().run_line_magic('matplotlib', 'inline')
 
 class Config(dict):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         for k, v in kwargs.items():
             setattr(self, k, v)
-    
+
     def set(self, key, val):
         self[key] = val
         setattr(self, key, val)
-        
+
 config = Config(
     model_type="bert-base-uncased",
     max_seq_len=128,
 )
-
-
-# In[3]:
-
 
 T = TypeVar('T')
 def flatten(x: List[List[T]]) -> List[T]:
@@ -111,62 +99,6 @@ def indices_to_words(indices: Iterable[int]) -> List[str]:
     return [full_vocab[x] for x in indices]
 
 
-# In[10]:
-
-
-indices_to_words(get_logits("he is very [MASK].").argmax(1))
-
-
-# In[11]:
-
-
-indices_to_words(get_logits("he is [MASK].").argmax(1))
-
-
-# In[14]:
-
-
-indices_to_words(get_logits("she is [MASK].").argmax(1))
-
-
-# In[15]:
-
-
-indices_to_words(get_logits("she is very [MASK].").argmax(1))
-
-
-# In[ ]:
-
-
-
-
-
-# The usual stuff
-
-# In[16]:
-
-
-indices_to_words(get_logits("[MASK] is a doctor.").argmax(1))
-
-
-# In[17]:
-
-
-indices_to_words(get_logits("[MASK] is a nurse.").argmax(1))
-
-
-# In[18]:
-
-
-indices_to_words(get_logits("[MASK] is a programmer.").argmax(1))
-
-
-# In[ ]:
-
-
-
-
-
 # Measuring difference
 
 # In[19]:
@@ -211,11 +143,6 @@ female_probs = female_probs[msk]
 [(pos + 1, full_vocab[i]) for i, pos in enumerate((female_probs / male_probs).argsort()) if pos < 10]
 
 
-# In[ ]:
-
-
-
-
 
 # # Construct measure of bias
 
@@ -234,19 +161,18 @@ def _get_mask_index(toks: Iterable[Token]) -> int:
             return i + 1 # take the [CLS] token into account
     raise ValueError("No [MASK] token found")
 
-
 # In[87]:
 
 
 def get_logits(input_sentence: str, n_calc: int=10) -> np.ndarray:
     """
-    n_calc: Since the logits are non-deterministic, 
+    n_calc: Since the logits are non-deterministic,
     computing the logits multiple times might be better
     """
     input_toks = tokenize(input_sentence)
     batch = token_indexer.tokens_to_indices(input_toks, vocab, "tokens")
     token_ids = torch.LongTensor(batch["tokens"]).unsqueeze(0)
-    
+
     logits = None
     for _ in range(n_calc):
         with torch.no_grad():
@@ -361,7 +287,3 @@ get_log_odds("[MASK] is a girl", "she", "he")
 
 
 # In[ ]:
-
-
-
-
