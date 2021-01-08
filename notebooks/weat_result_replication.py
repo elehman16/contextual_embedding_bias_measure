@@ -61,14 +61,18 @@ def bias_score(sentence: str, gender_words: Iterable[Iterable[str]],
         sentence.replace("XXX", word).replace("GGG", "[MASK]"),
         all_words, use_last_mask=not gender_comes_first,
     )
-    subject_fill_bias = np.log(sum(subject_fill_logits[mw] for mw in mwords)) - np.log(sum(subject_fill_logits[fw] for fw in fwords))
+    subject_fill_bias = np.log(sum(subject_fill_logits[mw] for mw in mwords)) - \
+                        np.log(sum(subject_fill_logits[fw] for fw in fwords))
     # male words are simply more likely than female words
     # correct for this by masking the target word and measuring the prior probabilities
     subject_fill_prior_logits = get_mask_fill_logits(
         sentence.replace("XXX", "[MASK]").replace("GGG", "[MASK]"),
         all_words, use_last_mask=gender_comes_first,
     )
-    subject_fill_bias_prior_correction = np.log(sum(subject_fill_prior_logits[mw] for mw in mwords)) - np.log(sum(subject_fill_prior_logits[fw] for fw in fwords))
+
+    subject_fill_bias_prior_correction = \
+        np.log(sum(subject_fill_prior_logits[mw] for mw in mwords)) - \
+        np.log(sum(subject_fill_prior_logits[fw] for fw in fwords))
 
     return {
             "stimulus": word,
