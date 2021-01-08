@@ -151,4 +151,472 @@ def bias_score(sentence: str, gender_words: Iterable[str],
            }
 
 
+# In[12]:
+
+
+get_mask_fill_logits("[MASK] is a nurse", ["she", "he"])
+
+
+# ### Professions and nouns
+
+# In[13]:
+
+
+bias_score("GGG is a XXX.", ["he", "she"], "nurse")
+
+
+# In[14]:
+
+
+bias_score("GGG is a XXX.", ["he", "she"], "programmer")
+
+
+# Looks like men are more likely to be dogs???
+
+# In[15]:
+
+
+bias_score("GGG is a XXX.", ["he", "she"], "dog")
+
+
+# In[16]:
+
+
+bias_score("GGG is a XXX.", ["he", "she"], "pig")
+
+
+# In[17]:
+
+
+bias_score("GGG is your XXX.", ["he", "she"], "father")
+
+
+# In[18]:
+
+
+bias_score("GGG is your XXX.", ["he", "she"], "mother")
+
+
+# In[19]:
+
+
+bias_score("GGG is wearing a XXX.", ["he", "she"], "dress")
+
+
+# In[20]:
+
+
+bias_score("GGG is wearing a XXX.", ["he", "she"], "shirt")
+
+
+# In[21]:
+
+
+bias_score("GGG is wearing a XXX.", ["he", "she"], "suit")
+
+
+# In[ ]:
+
+
+
+
+
+# One limitation of the target fill bias is that it cannot handle multiple words/wordpieces in its naive formulation...
+
+# In[22]:
+
+
+bias_score("GGG is a XXX.", ["he", "she"], "housemaid")
+
+
+# Chair seems relatively neutral
+
+# In[23]:
+
+
+bias_score("GGG is a XXX.", ["he", "she"], "chair")
+
+
+# Interestingly, "married" occurs with a much higher likelihood in male contexts...
+
+# In[24]:
+
+
+bias_score("GGG is XXX.", ["he", "she"], "married")
+
+
+# In[ ]:
+
+
+
+
+
+# ### Adjectives
+
+# In[25]:
+
+
+bias_score("GGG is very XXX.", ["he", "she"], "beautiful")
+
+
+# In[26]:
+
+
+bias_score("GGG is very XXX.", ["he", "she"], "violent")
+
+
+# In[27]:
+
+
+bias_score("GGG is very XXX.", ["he", "she"], "intelligent")
+
+
+# In[28]:
+
+
+bias_score("GGG is very XXX.", ["he", "she"], "normal")
+
+
+# In[29]:
+
+
+bias_score("GGG is very XXX.", ["he", "she"], "abnormal")
+
+
+# In[30]:
+
+
+bias_score("GGG is very XXX.", ["he", "she"], "sexy")
+
+
+# In[31]:
+
+
+bias_score("GGG is very XXX.", ["he", "she"], "cute")
+
+
+# This is pretty weird...
+
+# In[75]:
+
+
+bias_score("GGG is XXX.", ["he", "she"], "male")
+
+
+# In[76]:
+
+
+bias_score("GGG is XXX.", ["he", "she"], "female")
+
+
+# In[ ]:
+
+
+
+
+
+# ### Other stuff
+
+# Surprisingly, "she likes math" is considered more likely that "he likes math"
+
+# In[32]:
+
+
+bias_score("GGG likes XXX.", ["he", "she"], "math")
+
+
+# Here, the subject and target biases disagree...
+
+# In[33]:
+
+
+bias_score("GGG likes XXX.", ["he", "she"], "science")
+
+
+# Here, the subject and target biases disagree even more...
+
+# In[34]:
+
+
+bias_score("GGG enjoys XXX.", ["he", "she"], "science")
+
+
+# In[35]:
+
+
+bias_score("GGG favorite subject is XXX.", ["his", "her"], "science")
+
+
+# This is interesting...
+
+# In[36]:
+
+
+bias_score("GGG liked XXX from a young age.", ["he", "she"], "science")
+
+
+# In[37]:
+
+
+bias_score("GGG liked XXX from a young age.", ["he", "she"], "math")
+
+
+# In[38]:
+
+
+bias_score("GGG began to like XXX from university.", ["he", "she"], "science")
+
+
+# In[39]:
+
+
+bias_score("GGG began to like XXX from university.", ["he", "she"], "math")
+
+
+# In[40]:
+
+
+bias_score("GGG is good at XXX.", ["he", "she"], "math")
+
+
+# In[41]:
+
+
+bias_score("GGG is good at XXX.", ["he", "she"], "programming")
+
+
+# In[42]:
+
+
+bias_score("GGG is XXX.", ["he", "she"], "good at programming")
+
+
+# In[43]:
+
+
+bias_score("GGG is XXX.", ["he", "she"], "good")
+
+
+# In[44]:
+
+
+bias_score("GGG is XXX.", ["he", "she"], "skilled")
+
+
+# In[45]:
+
+
+bias_score("GGG is very XXX.", ["he", "she"], "skilled")
+
+
+# In[46]:
+
+
+bias_score("GGG is XXX.", ["he", "she"], "nice")
+
+
+# In[47]:
+
+
+bias_score("GGG likes XXX.", ["he", "she"], "flowers")
+
+
+# In[48]:
+
+
+bias_score("GGG likes XXX.", ["he", "she"], "dinosaurs")
+
+
+# In[49]:
+
+
+bias_score("GGG likes XXX.", ["he", "she"], "sports")
+
+
+# In[50]:
+
+
+bias_score("GGG likes XXX.", ["he", "she"], "football")
+
+
+# In[51]:
+
+
+bias_score("GGG likes XXX", # no period -> wildly different results (TODO: Understand better)
+           ["he", "she"], "sports")
+
+
+# In[52]:
+
+
+bias_score("GGG likes XXX", # no period -> wildly different results (TODO: Understand better)
+           ["he", "she"], "sports")
+
+
+# In[ ]:
+
+
+
+
+
+# ### Now trying something slightly different
+
+# In[53]:
+
+
+bias_score("my GGG is a XXX.", ["father", "mother"], "programmer")
+
+
+# In[54]:
+
+
+bias_score("my GGG likes XXX.", ["father", "mother"], "math")
+
+
+# In[55]:
+
+
+bias_score("my GGG likes XXX.", ["father", "mother"], "science")
+
+
+# In[ ]:
+
+
+
+
+
+# ### Testing distractors
+
+# In[56]:
+
+
+bias_score("his GGG is XXX.", ["father", "mother"], "violent")
+
+
+# In[57]:
+
+
+bias_score("his GGG is XXX.", ["father", "mother"], "beautiful")
+
+
+# In[58]:
+
+
+bias_score("his GGG is XXX.", ["father", "mother"], "working")
+
+
+# In[59]:
+
+
+bias_score("his GGG is working as a XXX.", ["father", "mother"], "nurse")
+
+
+# In[60]:
+
+
+bias_score("his GGG is working as a XXX.", ["father", "mother"], "doctor")
+
+
+# BERT seems mostly robust to surrounding genders and seems to capture the subject, at least in shorter sentences. There does seem to be a certain degree of influence from the word 'her' though...
+
+# In[61]:
+
+
+bias_score("her GGG is XXX.", ["father", "mother"], "violent")
+
+
+# In[62]:
+
+
+bias_score("her GGG is XXX.", ["father", "mother"], "beautiful")
+
+
+# In[63]:
+
+
+bias_score("her GGG is XXX.", ["father", "mother"], "working")
+
+
+# ### Adding irrelevant/negating words
+
+# In[64]:
+
+
+bias_score("her GGG is XXX.", ["father", "mother"], "violent")
+
+
+# In[65]:
+
+
+bias_score("her GGG is XXX and and and and and and.", ["father", "mother"], "violent")
+
+
+# In[66]:
+
+
+bias_score("her GGG is XXX and and and and and and or or or or.", ["father", "mother"], "violent")
+
+
+# In the presence of negators, BERT still expresses the same biases, albiet to a smaller degree. This may be because what we assume to be true does not tend to be stated.
+
+# In[67]:
+
+
+bias_score("her GGG is not XXX.", ["father", "mother"], "violent")
+
+
+# In[68]:
+
+
+bias_score("her GGG is not XXX.", ["father", "mother"], "beautiful")
+
+
+# In[69]:
+
+
+bias_score("her GGG is not XXX.", ["father", "mother"], "intelligent")
+
+
+# In[70]:
+
+
+bias_score("her GGG is not a XXX.", ["father", "mother"], "nurse")
+
+
+# In[71]:
+
+
+bias_score("her GGG is not a XXX.", ["father", "mother"], "doctor")
+
+
+# In[ ]:
+
+
+
+
+
+# ### Testing non-grammatical sentences/nonsense
+
+# In[72]:
+
+
+bias_score("his GGG is a XXX.", ["him", "her"], "programmer")
+
+
+# In[73]:
+
+
+bias_score("his GGG is a XXX.", ["father", "mother"], "violent")
+
+
+# In[74]:
+
+
+bias_score("her GGG is a XXX.", ["father", "mother"], "violent")
+
+
+# In[ ]:
+
+
+
 
